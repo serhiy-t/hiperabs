@@ -42,9 +42,9 @@ func (list *ArrayList) reserveCapacityForNextElement() {
 }
 
 // AppendRef ...
-func (list *ArrayList) AppendRef(element *reference.Ref) {
+func (list *ArrayList) AppendRef(element reference.PointerRef) {
 	list.reserveCapacityForNextElement()
-	reference.Copy(list.sliceRef.ElementRef(list.size), element)
+	reference.Copy(list.sliceRef.ElementRef(list.size), element.Ref())
 	list.size++
 }
 

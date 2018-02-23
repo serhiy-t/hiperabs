@@ -61,7 +61,7 @@ func benchmarkReferenceSliceAppend(sliceSize int, b *testing.B) {
 		pointRef := reference.ToPointer(&p)
 		for x := 0; x < sliceSize; x++ {
 			p = benchmarks.Point{X: x, Y: x}
-			arrayList.AppendRef(pointRef.Ref())
+			arrayList.AppendRef(pointRef)
 		}
 		verifySlice(arrayList.GetSlice())
 	}

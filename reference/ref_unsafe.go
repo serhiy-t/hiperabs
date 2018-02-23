@@ -38,6 +38,11 @@ func (pRef *PointerRef) Ref() *Ref {
 	return pRef.ref
 }
 
+// Object ...
+func (pRef *PointerRef) Object() interface{} {
+	return *pRef.ref.object
+}
+
 var zero int
 
 // ElementRef ...
@@ -95,7 +100,8 @@ func ToPointer(valuePtr interface{}) PointerRef {
 	descriptor := getTypeDescriptor(valuePtrType.Elem())
 
 	pointer := unsafe.Pointer(reflect.ValueOf(valuePtr).Pointer())
-	ref := Ref{pointer, &valuePtr, descriptor}
+	value := reflect.ValueOf(valuePtr).Elem().Interface()
+	ref := Ref{pointer, &value, descriptor}
 	return PointerRef{&ref}
 }
 
