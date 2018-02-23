@@ -27,7 +27,8 @@ type PointerRef struct {
 // SliceRef ...
 type SliceRef struct {
 	basePointer   unsafe.Pointer
-	ref           *Ref
+	ref1          *Ref
+	ref2          *Ref
 	sliceLen      int
 	typeSizeCache uintptr
 }
@@ -45,8 +46,9 @@ func (sRef *SliceRef) ElementRef(x int) *Ref {
 		// panic with inline
 		zero = zero / zero
 	}
-	sRef.ref.pointer = unsafe.Pointer(uintptr(sRef.basePointer) + uintptr(x)*sRef.typeSizeCache)
-	return sRef.ref
+	sRef.ref1, sRef.ref2 = sRef.ref2, sRef.ref1
+	sRef.ref1.pointer = unsafe.Pointer(uintptr(sRef.basePointer) + uintptr(x)*sRef.typeSizeCache)
+	return sRef.ref1
 }
 
 type bytes1Ptr [1]byte
@@ -106,7 +108,8 @@ func ToSlice(slice interface{}) SliceRef {
 
 	descriptor := getTypeDescriptor(sliceType.Elem())
 	basePointer := unsafe.Pointer(reflect.ValueOf(slice).Pointer())
-	ref := Ref{basePointer, &slice, descriptor}
+	ref1 := Ref{basePointer, &slice, descriptor}
+	ref2 := Ref{basePointer, &slice, descriptor}
 
-	return SliceRef{basePointer, &ref, reflect.ValueOf(slice).Len(), descriptor.size}
+	return SliceRef{basePointer, &ref1, &ref2, reflect.ValueOf(slice).Len(), descriptor.size}
 }
